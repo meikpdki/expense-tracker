@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Expense Tracker v3.2.2 Hotfix</title>
+  <title>Expenses</title>
+  <link rel="icon" href="data:," />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="theme-Dark">
@@ -11,9 +12,7 @@
     <div class="left">
       <div class="top-bar">
         <input id="searchInput" class="search" type="text" placeholder="Search by name..." />
-        <div class="date-filter-wrap">
-          <input id="globalDate" type="date" />
-        </div>
+        <div class="date-filter-wrap"><input id="globalDate" type="date" /></div>
         <select id="themeSelect">
           <option value="Dark">Dark</option>
           <option value="Blue">Blue</option>
@@ -31,7 +30,6 @@
         <button id="clearAllBtn" class="danger small">Clear All</button>
       </div>
 
-      <!-- file input กลาง ใช้ร่วมทุกแถว -->
       <input type="file" id="hiddenFileInput" accept="image/*" style="display:none" />
     </div>
 
@@ -41,16 +39,12 @@
         <input id="totalBalance" type="number" value="20000" />
         <div id="remainingLabel">Remaining: 0</div>
       </div>
-      <div class="chart-wrap">
-        <canvas id="pieCanvas" height="80"></canvas>
-      </div>
-      <div class="chart-wrap big">
-        <canvas id="lineCanvas"></canvas>
-      </div>
+      <div class="chart-wrap"><canvas id="pieCanvas" height="80"></canvas></div>
+      <div class="chart-wrap big"><canvas id="lineCanvas"></canvas></div>
     </div>
   </div>
 
-  <!-- modal ดูรูป -->
+  <!-- modal: ดูรูป -->
   <div id="imgModal" class="modal">
     <div class="modal-content">
       <span id="closeModal" class="close">&times;</span>
@@ -58,23 +52,23 @@
     </div>
   </div>
 
-  <!-- modal เลือกลบจาก Cloud -->
+  <!-- modal: ลบแบบเลือกแถว -->
   <div id="deleteModal" class="modal">
-    <div class="modal-content delete">
-      <div class="modal-header">
-        <strong>เลือกแถวที่จะลบ (Cloud)</strong>
+    <div class="modal-content" style="min-width:420px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="margin:.2rem 0;">เลือกแถวที่จะลบ (Cloud)</h3>
         <span id="closeDeleteModal" class="close">&times;</span>
       </div>
-      <div id="deleteList" class="delete-list"></div>
-      <div class="modal-actions">
+      <div id="deleteList" style="max-height:50vh;overflow:auto;margin:.5rem 0;"></div>
+      <div style="display:flex;gap:.5rem;justify-content:flex-end;">
         <button id="deleteSelectedBtn" class="danger">Delete Selected</button>
         <button id="deleteAllBtn" class="danger">Delete All</button>
-        <button id="cancelDeleteBtn" class="primary secondary">Cancel</button>
+        <button id="cancelDeleteBtn" class="secondary">Cancel</button>
       </div>
     </div>
   </div>
 
-  <!-- Firebase (modular v10) -->
+  <!-- Firebase v10 (modular) -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
     import { getDatabase, ref, set, get, remove, onValue, off } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
@@ -125,7 +119,7 @@
     };
   </script>
 
-  <!-- โหลด Chart.js แบบ defer -->
+  <!-- Chart.js + แอป -->
   <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script defer src="script.js"></script>
 </body>
