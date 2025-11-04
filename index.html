@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Expenses</title>
+  <title>Expense Tracker v3.2.2 Hotfix</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="theme-Dark">
@@ -31,7 +31,7 @@
         <button id="clearAllBtn" class="danger small">Clear All</button>
       </div>
 
-      <!-- ตัวเลือกไฟล์ (ใช้ร่วมทุกแถว) -->
+      <!-- file input กลาง ใช้ร่วมทุกแถว -->
       <input type="file" id="hiddenFileInput" accept="image/*" style="display:none" />
     </div>
 
@@ -50,7 +50,7 @@
     </div>
   </div>
 
-  <!-- Modal ดูรูป -->
+  <!-- modal ดูรูป -->
   <div id="imgModal" class="modal">
     <div class="modal-content">
       <span id="closeModal" class="close">&times;</span>
@@ -58,17 +58,15 @@
     </div>
   </div>
 
-  <!-- Modal ลบข้อมูลแบบเลือกแถว (Cloud) -->
-  <div id="deleteModal" class="modal" style="display:none">
-    <div class="modal-content" style="min-width: 560px;">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:.6rem">
-        <div style="font-weight:700">เลือกแถวที่จะลบ (Cloud)</div>
-        <span id="closeDeleteModal" class="close" title="Close">&times;</span>
+  <!-- modal เลือกลบจาก Cloud -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content delete">
+      <div class="modal-header">
+        <strong>เลือกแถวที่จะลบ (Cloud)</strong>
+        <span id="closeDeleteModal" class="close">&times;</span>
       </div>
-
-      <div id="deleteList" style="max-height:60vh; overflow:auto; margin:.5rem 0"></div>
-
-      <div style="display:flex; gap:.5rem; justify-content:flex-end">
+      <div id="deleteList" class="delete-list"></div>
+      <div class="modal-actions">
         <button id="deleteSelectedBtn" class="danger">Delete Selected</button>
         <button id="deleteAllBtn" class="danger">Delete All</button>
         <button id="cancelDeleteBtn" class="primary secondary">Cancel</button>
@@ -127,7 +125,7 @@
     };
   </script>
 
-  <!-- โหลด Chart.js แบบ defer + สคริปต์หลัก -->
+  <!-- โหลด Chart.js แบบ defer -->
   <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script defer src="script.js"></script>
 </body>

@@ -24,12 +24,20 @@ button{cursor:pointer;border:none;border-radius:4px;font-weight:500}
 .chart-wrap{background:radial-gradient(circle,#0a3244 0%,#02080d 90%);margin:.4rem;border-radius:6px;min-height:90px}
 .chart-wrap.big{flex:1;min-height:0}
 canvas{width:100%!important}
+
+/* generic modal */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:999}
 .modal-content{background:#0b1e2a;padding:.5rem;border-radius:6px;max-width:90vw;max-height:90vh}
 .modal img{max-width:80vw;max-height:80vh;display:block}
 .close{float:right;cursor:pointer;font-size:1.4rem}
+
+/* delete modal details */
+.modal-content.delete{width:min(800px,95vw)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.delete-list{max-height:60vh;overflow:auto;background:#081924;border:1px solid #0c2c3a;padding:.5rem;border-radius:6px}
+.delete-item{display:flex;gap:.6rem;align-items:flex-start;padding:.35rem;border-bottom:1px dashed #0f3a4a}
+.delete-item .meta{opacity:.7;font-size:.85rem}
+.modal-actions{display:flex;justify-content:flex-end;gap:.5rem;margin-top:.6rem}
+
 .list::-webkit-scrollbar,.right::-webkit-scrollbar{width:6px}
 .list::-webkit-scrollbar-thumb,.right::-webkit-scrollbar-thumb{background:#0f4053;border-radius:5px}
-/* เลย์เอาต์เล็กๆสำหรับหน้าลบ */
-.delete-item{display:flex;gap:.6rem;align-items:flex-start;background:#081a24;border:1px solid #0d2b3a;border-radius:6px;padding:.4rem}
-.delete-item .meta{opacity:.8;font-size:.8rem}
