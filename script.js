@@ -1,4 +1,18 @@
 const DELETE_PASSWORD = "meikpdki";
+function generateColors(n){ const base = ["#23d3ff","#ffbe55","#ff5e7e","#63ff9e","#d35dff","#ff8f3d","#8affff","#ffe45e","#74ff6a","#ff6ab7"]; return Array.from({length:n}, (_,i) => base[i % base.length]); }
+function calcRemaining(){ const total = Number(totalBalanceInput.value || 0); const spent = expenses.reduce((s, x) => s + Number(x.amount || 0), 0); remainingLabel.textContent = "Remaining: " + (total - spent); }
+function createExpenseRow(){ const now = new Date(); const d = now.toISOString().slice(0,10); const t = now.toTimeString().slice(0,5); return { id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+Math.random().toString(36).slice(2)), date: d + " " + t, name: "New Item", amount: 0, image: "" }; }
+function focusNextRowName(currentId){ const idx = expenses.findIndex(x => x.id === currentId); if(idx !== -1 && idx + 1 < expenses.length){ const nextId = expenses[idx + 1].id; const nextRow = listEl.querySelector('.row[data-id="' + nextId + '"]'); if(nextRow){ const inp = nextRow.querySelector('input[type="text"]'); if(inp){ inp.focus(); inp.select(); } } } else { const r = createExpenseRow(); expenses.push(r); renderList(); updateCharts(); calcRemaining(); const rowEl = listEl.querySelector('.row[data-id="' + r.id + '"]'); const inp2 = rowEl && rowEl.querySelector('input[type="text"]'); if(inp2){ inp2.focus(); } } }
+function applyTheme(theme){ document.body.classList.remove("theme-Dark", "theme-Blue", "theme-Green"); document.body.classList.add("theme-" + theme); currentTheme = theme; }
+
+
+function payloadFromUI(){ return { expenses: expenses, totalBalance: Number(totalBalanceInput.value || 0), theme: currentTheme }; }
+function applyPayload(p){ expenses = (p && p.expenses) ? p.expenses : []; totalBalanceInput.value = (p && typeof p.totalBalance !== 'undefined') ? p.totalBalance : totalBalanceInput.value; applyTheme((p && p.theme) ? p.theme : currentTheme); renderList(); updateCharts(); calcRemaining(); }
+
+
+async function syncToCloud(){ if(!window.fb){ alert('Firebase ยังไม่โหลด'); return; } const id = await window.fb.write(payloadFromUI()); const shareUrl = location.origin + location.pathname + '?id=' + id; try{ await navigator.clipboard.writeText(shareUrl); }catch(e){} window.fb.setLocalId(id); window.fb.onLive(id, function(live){ if(live){ applyPayload(live); } }); alert('ซิงก์สำเร็จ!\nลิงก์ถูกคัดลอกแล้ว:\n' + shareUrl); }
+
+
 // ===== Delete (Selective) =====
 function openDeleteModal(){
 if(!deleteModal || !deleteListEl){ alert('Delete UI missing'); return; }
