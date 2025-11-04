@@ -1,115 +1,74 @@
 <!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Expenses</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body class="theme-Dark">
-  <div class="app">
-    <div class="left">
-      <div class="top-bar">
-        <input id="searchInput" class="search" type="text" placeholder="Search by name..." />
-        <div class="date-filter-wrap">
-          <input id="globalDate" type="date" />
-        </div>
-        <select id="themeSelect">
-          <option value="Dark">Dark</option>
-          <option value="Blue">Blue</option>
-          <option value="Green">Green</option>
-        </select>
-        <button id="addBtn" class="primary">+ Add</button>
-        <button id="syncBtn" class="primary secondary">Sync to Cloud</button>
-        <button id="deleteCloudBtn" class="danger">Delete Synced Data</button>
-      </div>
+<h3 style="margin:0 0 .6rem 0">เลือกแถวที่จะลบ (Cloud)</h3>
+<div id="deleteList" style="display:flex;flex-direction:column;gap:.5rem;max-height:60vh;overflow:auto"></div>
+<div style="display:flex;gap:.5rem;margin-top:.75rem;justify-content:flex-end">
+<button id="deleteSelectedBtn" class="danger">Delete Selected</button>
+<button id="deleteAllBtn" class="danger secondary">Delete All</button>
+<button id="cancelDeleteBtn" class="primary">Cancel</button>
+</div>
+</div>
+</div>
 
-      <div id="list" class="list"></div>
 
-      <div class="bottom-bar">
-        <button id="saveJsonBtn" class="primary small">Save JSON</button>
-        <button id="clearAllBtn" class="danger small">Clear All</button>
-      </div>
+<!-- Firebase (modular v10) -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, set, get, remove, onValue, off } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-      <input type="file" id="hiddenFileInput" accept="image/*" style="display:none" />
-    </div>
 
-    <div class="right">
-      <div class="panel">
-        <label>Total Balance</label>
-        <input id="totalBalance" type="number" value="20000" />
-        <div id="remainingLabel">Remaining: 0</div>
-      </div>
-      <div class="chart-wrap">
-        <canvas id="pieCanvas" height="80"></canvas>
-      </div>
-      <div class="chart-wrap big">
-        <canvas id="lineCanvas"></canvas>
-      </div>
-    </div>
-  </div>
+const firebaseConfig = {
+apiKey: "AIzaSyBje0eYhaR5NkyQqD9Kzh42htSTsU6iKWw",
+authDomain: "expense-sync-realtime.firebaseapp.com",
+databaseURL: "https://expense-sync-realtime-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId: "expense-sync-realtime",
+storageBucket: "expense-sync-realtime.firebasestorage.app",
+messagingSenderId: "1054304195925",
+appId: "1:1054304195925:web:75246d2f8de1d0a761cbdc"
+};
 
-  <!-- modal ดูรูป -->
-  <div id="imgModal" class="modal">
-    <div class="modal-content">
-      <span id="closeModal" class="close">&times;</span>
-      <img id="previewImg" src="" alt="preview" />
-    </div>
-  </div>
 
-  <!-- Firebase (modular v10) -->
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getDatabase, ref, set, get, remove, onValue, off } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBje0eYhaR5NkyQqD9Kzh42htSTsU6iKWw",
-      authDomain: "expense-sync-realtime.firebaseapp.com",
-      databaseURL: "https://expense-sync-realtime-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "expense-sync-realtime",
-      storageBucket: "expense-sync-realtime.firebasestorage.app",
-      messagingSenderId: "1054304195925",
-      appId: "1:1054304195925:web:75246d2f8de1d0a761cbdc"
-    };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+const KEY = 'expense_share_id';
+const shortId = () => Math.random().toString(36).slice(2, 8);
 
-    const KEY = 'expense_share_id';
-    const shortId = () => Math.random().toString(36).slice(2, 8);
 
-    let liveUnsubscribe = null;
+let liveUnsubscribe = null;
 
-    window.fb = {
-      getLocalId() { return localStorage.getItem(KEY); },
-      setLocalId(id) { localStorage.setItem(KEY, id); },
-      async write(payload) {
-        let id = localStorage.getItem(KEY);
-        if (!id) { id = shortId(); localStorage.setItem(KEY, id); }
-        await set(ref(db, 'shares/' + id), { payload, ts: Date.now() });
-        return id;
-      },
-      async read(id) {
-        const snap = await get(ref(db, 'shares/' + id));
-        return snap.exists() ? snap.val().payload : null;
-      },
-      async del(id) {
-        await remove(ref(db, 'shares/' + id));
-        if (localStorage.getItem(KEY) === id) localStorage.removeItem(KEY);
-      },
-      onLive(id, cb) {
-        if (liveUnsubscribe) liveUnsubscribe();
-        const r = ref(db, 'shares/' + id);
-        const handler = (s) => cb(s.val() && s.val().payload ? s.val().payload : null);
-        onValue(r, handler);
-        liveUnsubscribe = () => off(r, 'value', handler);
-        return liveUnsubscribe;
-      }
-    };
-  </script>
 
-  <!-- โหลด Chart.js แบบ defer -->
-  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script defer src="script.js"></script>
+window.fb = {
+getLocalId() { return localStorage.getItem(KEY); },
+setLocalId(id) { localStorage.setItem(KEY, id); },
+async write(payload) {
+let id = localStorage.getItem(KEY);
+if (!id) { id = shortId(); localStorage.setItem(KEY, id); }
+await set(ref(db, 'shares/' + id), { payload, ts: Date.now() });
+return id;
+},
+async read(id) {
+const snap = await get(ref(db, 'shares/' + id));
+return snap.exists() ? snap.val().payload : null;
+},
+async del(id) {
+await remove(ref(db, 'shares/' + id));
+if (localStorage.getItem(KEY) === id) localStorage.removeItem(KEY);
+},
+onLive(id, cb) {
+if (liveUnsubscribe) liveUnsubscribe();
+const r = ref(db, 'shares/' + id);
+const handler = (s) => cb(s.val() && s.val().payload ? s.val().payload : null);
+onValue(r, handler);
+liveUnsubscribe = () => off(r, 'value', handler);
+return liveUnsubscribe;
+}
+};
+</script>
+
+
+<!-- โหลด Chart.js แบบ defer และสคริปต์หลัก -->
+<script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script defer src="script.js"></script>
 </body>
 </html>
