@@ -1,5 +1,5 @@
 :root{--bg:#0f2432;--bg2:#0c1a24;--panel:#071018;--text:#fff;--accent:#0aa7d8;--danger:#e74c3c;--row:#0b1f2b;--row-border:#082029}
-body.theme-Dark{--bg:#0f2432;--bg2:#0c1a24;--panel:#071018;--text:#fff;--accent:#0aa7d8;--danger:#e74c3c;--row:#0b1f2b;--row-border:#082029}
+body.theme-Dark{--bg:#0f2432;--bg2:#0c1a24;--panel:#071018;--text:#fff;--accent:#0aa7ด8;--danger:#e74c3c;--row:#0b1f2b;--row-border:#082029}
 body.theme-Blue{--bg:#0e1a2b;--bg2:#0b1322;--panel:#0a1420;--text:#e9f6ff;--accent:#1ea7ff;--danger:#e74c3c;--row:#0c1f33;--row-border:#0a2740}
 body.theme-Green{--bg:#0f241a;--bg2:#0a1a13;--panel:#0a1510;--text:#eafff4;--accent:#20d197;--danger:#e74c3c;--row:#0b2b1d;--row-border:#0a3a27}
 body{margin:0;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;background:var(--bg);color:var(--text)}
